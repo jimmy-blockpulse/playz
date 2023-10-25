@@ -1,18 +1,13 @@
 const hre = require("hardhat");
 
 async function main() {
-  const nft = await hre.ethers.getContractFactory("NFT");
+  const profile = await hre.ethers.getContractFactory("PlayzProfile");
 
-  const deployedContract = await nft.deploy(
-    "Test",
-    "TST",
-    "",
-    "0x6877b0C0c37dEcb4B8B2c3B42f98C5bED4C0a246"
-  );
+  const deployedContract = await profile.deploy("Test");
 
   await deployedContract.deployed();
 
-  console.log("NFT deployed to:", deployedContract.address);
+  console.log("profile deployed to:", deployedContract.address);
 
   return deployedContract;
 }

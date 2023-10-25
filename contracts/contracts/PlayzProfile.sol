@@ -41,7 +41,9 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
     event MembershipMinted(address indexed to);
     event ProfileURISet(string newProfileURI);
 
-    constructor(string memory uri_) ERC1155(uri_) {}
+    constructor(string memory _profileURI) ERC1155(_profileURI) {
+        setProfileURI(_profileURI);
+    }
 
     modifier _isMember() {
         require(
@@ -51,12 +53,12 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         _;
     }
 
-    function createMembership(
+    function initializeMembership(
         string memory _tokenURI,
         uint256 _tokenSupply,
         uint256 _tokenPrice,
         uint256 _royaltyPercentage
-    ) external onlyOwner {
+    ) internal onlyOwner {
         _setURI(0, _tokenURI);
         _setSupply(0, _tokenSupply);
         _setPrice(0, _tokenPrice);
@@ -73,13 +75,15 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         string memory _tokenURI,
         uint256 _tokenSupply,
         uint256 _tokenPrice,
-        uint256 _royaltyPercentage
+        uint256 _royaltyPercentage,
+        bool _setMemberEdition
     ) external onlyOwner {
         uint256 _tokenId = nextTokenId();
         _setURI(_tokenId, _tokenURI);
         _setSupply(_tokenId, _tokenSupply);
         _setPrice(_tokenId, _tokenPrice);
         _setRoyaltyPercentage(_tokenId, _royaltyPercentage);
+        if (_setMemberEdition) _setMemberEdition(_tokenId);
         emit EditionCreated(
             _tokenId,
             _tokenURI,
@@ -89,7 +93,7 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         );
     }
 
-    function setMemberEdition(uint256 _tokenId) external onlyOwner {
+    function _setMemberEdition(uint256 _tokenId) internal onlyOwner {
         _isMemberEdition[_tokenId] = true;
         emit MemberEditionSet(_tokenId);
     }
@@ -158,7 +162,7 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         emit MembershipMinted(msg.sender);
     }
 
-    function setProfileURI(string memory _profileURI) external onlyOwner {
+    function setProfileURI(string memory _profileURI) public onlyOwner {
         profileURI = _profileURI;
         emit ProfileURISet(_profileURI);
     }
