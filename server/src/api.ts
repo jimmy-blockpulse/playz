@@ -32,15 +32,62 @@ const mongoClient = new MongoClient(uri, {
   },
 });
 
+mongoClient
+  .connect()
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
+  });
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use(
-  fileUpload({
-    createParentPath: true,
-  })
-);
+app.get("/users", async (req: Request, res: Response) => {
+  const { address } = req.query;
+  console.log("address to fetch: ", address);
+  try {
+    await mongoClient.connect();
+    const usersCollection = await mongoClient.db("playz").collection("users");
+    const fetchedUser = await usersCollection.findOne({ _id: address as any });
+    console.log("fetchedUser: ", fetchedUser);
+    res.json(fetchedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch users." });
+  }
+});
+
+app.post("/users", async (req: Request, res: Response) => {
+  const { address, username, imageCID, profileAddress } = req.body;
+
+  try {
+    await mongoClient.connect();
+
+    const usersCollection = await mongoClient.db("playz").collection("users");
+
+    const addedUser = await usersCollection.updateOne(
+      { _id: address as any },
+      {
+        $set: {
+          username: username,
+          bio: "",
+          image: imageCID,
+          profileAddress: profileAddress,
+        },
+      },
+      { upsert: true }
+    );
+
+    console.log("addedUser: ", addedUser);
+    res.json({ message: "User successfully updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update user." });
+  }
+});
 
 app.get("/videos", async (_, res) => {
   try {
@@ -48,12 +95,51 @@ app.get("/videos", async (_, res) => {
 
     const videosCollection = await mongoClient.db("playz").collection("videos");
 
-    const videos = await videosCollection.find().limit(50).toArray();
+    const videos = await videosCollection
+      .find()
+      .sort({ order: -1 })
+      .limit(25)
+      .toArray();
 
     res.json(videos);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch videos." });
+  }
+});
+app.get("/videos/:address", async (req, res) => {
+  try {
+    await mongoClient.connect();
+
+    const videosCollection = await mongoClient.db("playz").collection("videos");
+    const { address } = req.params;
+
+    const videos = await videosCollection
+      .find({ _id: address as any })
+      .limit(10)
+      .toArray();
+
+    res.json(videos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch videos by userId." });
+  }
+});
+
+app.get("/creators", async (_, res) => {
+  try {
+    await mongoClient.connect();
+
+    const creatorsCollection = await mongoClient
+      .db("playz")
+      .collection("creators");
+
+    const creators = await creatorsCollection.find().limit(50).toArray();
+
+    res.json(creators);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch creators." });
   }
 });
 
