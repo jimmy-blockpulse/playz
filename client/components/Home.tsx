@@ -2,69 +2,95 @@ import { useState, useEffect } from "react";
 import VideoCard from "@components/VideoCard";
 import styles from "@styles/Home.module.css";
 import axios from "axios";
-import { useAccount } from "wagmi";
-import { Button } from "@chakra-ui/react";
-import { sendTransaction } from "@wagmi/core";
-import { parseEther } from "viem";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { VStack, Spinner } from "@chakra-ui/react";
+import Header from "./Header";
+import MenuBar from "./Menu";
+import { API_URL } from "pages";
+import Navbar from "./Navbar";
+import CreateEdition from "./CreateEdition";
 
-function App() {
-  const { address } = useAccount();
+function Home() {
   const [videos, setvideos] = useState([]);
-  const [videosLoaded, setvideosLoaded] = useState(false);
+  const [creators, setCreators] = useState([]);
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [mediaURL, setMediaURL] = useState(null);
 
-  const send = async () => {
-    const { hash } = await sendTransaction({
-      to: "0xc4e424b8ffe69309aecb273d53ee7c0464199ab7",
-      value: parseEther("0.0001"),
-    } as any);
-  };
+  const [videosLoaded, setvideosLoaded] = useState(false);
 
   const getVideos = async () => {
     try {
-      const response = await axios.get("http://192.168.1.163:8888/videos"); // Change to your server URL if needed
-      setvideos((oldVideos) => [...oldVideos, ...response.data]);
+      const response = await axios.get(`${API_URL}/videos`);
+      const combinedVideos = [...response.data];
+      // Shuffle videos using Fisher-Yates algorithm
+      for (let i = combinedVideos.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combinedVideos[i], combinedVideos[j]] = [
+          combinedVideos[j],
+          combinedVideos[i],
+        ];
+      }
+      setvideos(combinedVideos);
       setvideosLoaded(true);
+      // setvideos((oldVideos) => [...oldVideos, ...response.data]);
+      // setvideosLoaded(true);
     } catch (e) {
       console.error(e);
       setvideosLoaded(false);
     }
   };
 
+  const getCreators = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/creators`);
+      setCreators((oldVideos) => [...oldVideos, ...response.data]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
     getVideos();
+    getCreators();
   }, []);
+
+  if (uploadedFile)
+    return (
+      <main className={styles.main}>
+        <Navbar title="" isPost setUploadedFile={setUploadedFile} />
+        <CreateEdition
+          uploadedFile={uploadedFile}
+          mediaURL={mediaURL}
+          setUploadedFile={setUploadedFile}
+        />
+      </main>
+    );
 
   return (
     <main className={styles.main}>
+      <Header isFeed={false} />
       <div className={styles.sliderContainer}>
         {videos.length > 0 ? (
           <>
-            {videos.map((video, id) => (
+            {videos.slice(0, 10).map((video, id) => (
               <VideoCard
                 key={id}
                 index={id}
                 video={video}
                 lastVideoIndex={videos.length - 1}
                 getVideos={getVideos}
+                creator={creators[video._id % 10]}
               />
             ))}
           </>
         ) : (
-          <>
-            <h1>Nothing to show here</h1>
-          </>
+          <VStack h="100vh" justifyContent="center">
+            <Spinner />
+          </VStack>
         )}
-        {address && (
-          <Button backgroundColor="black" onClick={send}>
-            Send
-          </Button>
-        )}
-        <ConnectButton />
       </div>
-      {/* <BottomNav /> */}
+      <MenuBar setUploadedFile={setUploadedFile} setMediaURL={setMediaURL} />
     </main>
   );
 }
 
-export default App;
+export default Home;

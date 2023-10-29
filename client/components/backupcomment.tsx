@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import styles from "@styles/Home.module.css";
 import useIsInViewport from "@hooks/useIsInViewport";
 import {
@@ -6,10 +6,6 @@ import {
   FaBookmark,
   FaCommentDots,
   FaHeart,
-  FaMoneyBill,
-  FaShare,
-  FaShoppingBag,
-  FaShoppingBasket,
   FaUser,
 } from "react-icons/fa";
 import {
@@ -20,97 +16,41 @@ import {
   Box,
   HStack,
   Image,
-  useToast,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useAccount, useSigner } from "wagmi";
-import dummyUsers from "@data/Users.json";
-import dummyComments from "@data/Comments.json";
+import { useAccount } from "wagmi";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+} from "@chakra-ui/react";
+import { abridgeAddress } from "@utils/utils";
 import { API_URL } from "pages";
-import { useAuth } from "./AuthProvider";
-import { ethers, BigNumber } from "ethers";
-import PlayzProfile from "@data/PlayzProfile.json";
 
 const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const toast = useToast();
 
   const { address } = useAccount();
   const isInViewport = useIsInViewport(videoRef);
   const [loadNewVidsAt, setloadNewVidsAt] = useState(lastVideoIndex);
   const [comment, setComment] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: signer, isError } = useSigner();
 
   // count the number of true values in the likes object
   const initialLikesCount = Object.values(video.likes || {}).filter(
     Boolean
   ).length;
-  const [likes, setLikes] = useState(Math.round(Math.random() * 25) + 15);
+  const [likes, setLikes] = useState(initialLikesCount);
 
   const initialIsLiked = Boolean(video.likes && video.likes[address]);
   const [isLiked, setLiked] = useState(initialIsLiked);
 
   const initialCommentsCount = Object.values(video.comments || {}).length;
-  const [users, setUsers] = useState([]);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(initialCommentsCount);
   const [newComment, setNewComment] = useState("");
   const [isBookmarked, setBookmarked] = useState(false);
-
-  const { fetchedUser } = useAuth();
-
-  const getRandomItem = (array) => {
-    return array[Math.floor(Math.random() * array.length)];
-  };
-
-  useEffect(() => {
-    const numComments = 6 + Math.floor(Math.random() * 8);
-    const generateUsers = () => {
-      let randomUsers = [];
-      for (let i = 0; i < numComments; i++) {
-        const randomUser = getRandomItem(dummyUsers);
-        randomUsers.push(randomUser);
-      }
-      setUsers(randomUsers);
-    };
-    const generateComments = () => {
-      let randomComments = [];
-      for (let i = 0; i < numComments; i++) {
-        const randomComment = getRandomItem(dummyComments);
-        randomComments.push(randomComment);
-      }
-      setComments(randomComments);
-    };
-
-    generateUsers();
-    generateComments();
-  }, []);
-
-  const handleSubmitComment = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.put(
-        `${API_URL}/videos/${video._id}/comment`,
-        {
-          address,
-          comment,
-        }
-      );
-
-      if (response.data.success) {
-        setNewComment(comment);
-        setComment("");
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   if (isInViewport) {
     setTimeout(() => {
@@ -167,56 +107,31 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
     onOpen();
   };
 
-  // const handleSubmitComment = async (e) => {
-  //   e.preventDefault();
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
 
-  //   try {
-  //     const response = await axios.put(
-  //       `${API_URL}/videos/${video._id}/comment`,
-  //       {
-  //         address,
-  //         comment,
-  //       }
-  //     );
+    try {
+      const response = await axios.put(
+        `${API_URL}/videos/${video._id}/comment`,
+        {
+          address,
+          comment,
+        }
+      );
 
-  //     if (response.data.success) {
-  //       setComments((prevComments) => prevComments + 1);
-  //       setNewComment(comment);
-  //       setComment("");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  const handleShareClicked = () => {
-    toast({
-      title: "Link copied.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      containerStyle: { marginBottom: "25px !important" },
-    });
+      if (response.data.success) {
+        setComments((prevComments) => prevComments + 1);
+        setNewComment(comment);
+        setComment("");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleBuy = useCallback(async () => {
-    try {
-      const contract = new ethers.Contract(
-        fetchedUser.profileAddress,
-        PlayzProfile.abi,
-        signer
-      );
-
-      const nftResult = await contract["purchaseEdition(uint256,uint256)"](
-        BigNumber.from(1),
-        BigNumber.from(1)
-      );
-
-      return nftResult;
-    } catch (e) {
-      console.log(e);
-    }
-  }, [signer]);
+  const handleBookmarkClick = () => {
+    setBookmarked(!isBookmarked);
+  };
 
   useEffect(() => {
     if (!isInViewport) {
@@ -258,10 +173,6 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
       <VStack className={styles.contentContainer} gap={2}>
         <VStack className={styles.reactionContainer} gap={5}>
           <VStack gap={1}>
-            <FaShoppingBag size={40} onClick={handleBuy} />
-            <Text className={styles.unclickable}>0</Text>
-          </VStack>
-          <VStack gap={1}>
             {isLiked ? (
               <FaHeart
                 size={40}
@@ -280,18 +191,16 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
               onClick={handleCommentsClick}
               cursor="pointer"
             />
-            <Text className={styles.unclickable}>
-              {newComment ? comments.length + 1 : comments.length}
-            </Text>
+            <Text className={styles.unclickable}>{comments}</Text>
           </VStack>
           {isBookmarked ? (
-            <FaShare
+            <FaBookmark
               size={40}
-              onClick={handleShareClicked}
+              onClick={handleBookmarkClick}
               className={styles.bookmarkIcon}
             />
           ) : (
-            <FaShare size={40} onClick={handleShareClicked} />
+            <FaBookmark size={40} onClick={handleBookmarkClick} />
           )}
         </VStack>
         <Drawer
@@ -304,35 +213,46 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
           <DrawerContent borderTopLeftRadius={30} borderTopRightRadius={30}>
             <DrawerHeader borderBottomWidth="1px">
               <Text color="black">
-                <Text>
-                  {newComment ? comments.length + 1 : comments.length} comments
-                </Text>
+                {Object.keys(video.comments || {}).length} comments
               </Text>
             </DrawerHeader>
             <DrawerBody>
-              <VStack
-                h="350px"
-                marginBottom="60px"
-                className={styles.drawer}
-                pt="0.3rem"
-                gap={5}
-                overflowY="scroll"
-              >
-                {comments.map((comment, index) => (
-                  <VStack key={index} className={styles.commentContainer}>
-                    <Text
-                      className={styles.username}
-                    >{`@${users[index]}`}</Text>
-                    <Text className={styles.comment}>{comment}</Text>
-                  </VStack>
-                ))}
+              <VStack h="400px" className={styles.drawer}>
+                {video.comments &&
+                  Object.entries(video.comments).map(
+                    ([address, comment], index) => (
+                      <HStack
+                        key={index}
+                        width="100%"
+                        pt="0.5rem"
+                        justifyContent="space-evenly"
+                      >
+                        <HStack width="100%">
+                          <VStack
+                            backgroundColor="lightgrey"
+                            borderRadius="100%"
+                            padding="0.5rem"
+                            marginRight="0.25rem"
+                          >
+                            <FaUser />
+                          </VStack>
+                          <VStack gap={0} alignItems="flex-start !important">
+                            <Text
+                              fontSize={12}
+                              fontWeight={700}
+                              opacity={0.6}
+                            >{`${abridgeAddress(address)}`}</Text>
+                            <Text fontSize={12}>{comment as string}</Text>
+                          </VStack>
+                        </HStack>
+                        <FaHeart />
+                      </HStack>
+                    )
+                  )}
                 {newComment && (
-                  <VStack className={styles.commentContainer}>
-                    <Text
-                      className={styles.username}
-                    >{`@${fetchedUser.username}`}</Text>
-                    <Text className={styles.comment}>{newComment}</Text>
-                  </VStack>
+                  <Box key={index}>
+                    <Text>{`${abridgeAddress(address)}: ${newComment}`}</Text>
+                  </Box>
                 )}
                 <HStack className={styles.commentInputContainer}>
                   <form onSubmit={handleSubmitComment}>
