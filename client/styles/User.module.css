@@ -1,0 +1,56 @@
+.profileImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
+.cellTitle {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cellSubtitle {
+  font-size: 12px;
+}
+
+.cellContainer {
+  width: 250px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.thumbnailContainer {
+  position: relative;
+}
+
+.thumbnail {
+  height: 200px;
+  object-fit: cover;
+}
+
+.thumbnailCaption {
+  position: absolute;
+  width: 100%;
+  justify-content: flex-start;
+  padding-left: 0.5rem;
+  padding-bottom: 0.25rem;
+  bottom: 0;
+}
+
+.grid {
+  padding-top: 0.25rem;
+}
+
+.memberBtn {
+  background-color: #ee4f69 !important;
+  color: white;
+  font-size: 12px !important;
+  width: 150px;
+  height: 30px !important;
+}
+
+.giftBtn {
+  width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+}

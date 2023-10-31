@@ -5,6 +5,7 @@ body {
   color: white !important;
   background-color: #000000 !important;
   font-family: "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
 }
 
 a {

@@ -1,0 +1,49 @@
+.navbarContainer {
+  position: absolute;
+  width: 100%;
+  z-index: 10 !important;
+  color: white;
+  justify-content: space-between;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-top: 1rem !important;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: black;
+}
+
+.navLeftSection,
+.navCenterSection,
+.navRightSection {
+  gap: 0.5rem;
+}
+
+.leftIcon {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+}
+
+.center {
+  width: 170px;
+  height: 35px;
+  border-radius: 50px;
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  padding: 2px;
+}
+
+.rightIcon {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+}
+
+.navHeader {
+  font-size: 14px !important;
+  font-weight: 700;
+}
