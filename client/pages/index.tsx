@@ -1,17 +1,22 @@
-import { useState, useEffect } from "react";
-import BottomNav from "@components/BottomNav";
-import VideoCard from "@components/VideoCard";
-import styles from "@styles/Main.module.css";
-import axios from "axios";
-import { useAccount } from "wagmi";
 import Landing from "@components/Landing";
 import Home from "@components/Home";
+import { useAuth } from "@components/AuthProvider";
+import { VStack, Spinner } from "@chakra-ui/react";
+
+// export const API_URL = "http://localhost:8888";
+export const API_URL = "http://172.20.10.3:8888";
 
 function App() {
-  const { address } = useAccount();
+  const { isSignedIn, fetchedUser, isFetchedUserLoading } = useAuth();
 
-  return <Landing />;
-  // return !address ? <Landing /> : <Home />;
+  if (isFetchedUserLoading)
+    return (
+      <VStack h="100vh" justifyContent="center">
+        <Spinner color="white" />
+      </VStack>
+    );
+
+  return !isSignedIn || !fetchedUser ? <Landing /> : <Home />;
 }
 
 export default App;
