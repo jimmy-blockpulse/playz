@@ -13,21 +13,20 @@ Our inspiration for Playz stemmed from recognizing the potential of Web3 and dec
 
 ## How we built it
 
-Playz was built with the goal of seamlessly integrating Web2 usability with Web3 community engagement. To ensure a smooth user experience, we drew lessons from industry leaders like Dapper Labs, Reddit, and Manifold. Our tech stack includes React, ExpressJS, MongoDB, and Chakra UI for building our front-end and backend systems. For the smart contracts, we employed Solidity and Hardhat. Our video streaming and uploading services are powered by the Theta Video API and Theta Network, and we utilize ThetaPass for secure access control.
-
-## Challenges we ran into
-
-During the development process, we encountered a couple of significant challenges. Initially, our goal was to create a native mobile experience, but we found that wallet integration for native applications lacked in providing a smooth user experience. To overcome this, we decided to build a mobile-first web app and relied on in-app dapp browsers on existing wallets like MetaMask and Coinbase Wallet.
-
-A major setback occurred when the Theta Video API had an outage that led to the loss of all the videos we had uploaded during our build. It also prevented us from using the API for uploading and streaming content, which delayed our development by a week.
+- Frontend: NextJS
+- Backend: ExpressJS
+- Ethereum Library: wagmi, Ethers.js, Hardhat
+- Contracts: Solidity v8.17.0
+- File Storage: IPFS, web3.storage
+- User Interface: Chakra UI
 
 ## What's next for Playz
 
 Looking ahead, we have several plans in the pipeline:
-- Token-gated live streaming for artists and communities, offering exclusive access to unique experiences.
-- Content pre-sale launchpad feature, aiming to aid new artists in project fundraising.
-- Planned smart contract audit to enhance safety and security of tokenized content for our users.
-- User experience enhancement across devices through continuous testing and refinement of our responsive design.
-- Thetadrop integration, enabling artists to create drops directly on our platform.
-- Concentrated marketing and advertising efforts to raise awareness and attract new users.
-- Potential partnerships with large entertainment companies to recruit more artists to the platform.
+- Mobile-first application using React Native
+- Subscription-based Memberships (i.e. On-chain Patreon)
+- Live-streaming feature using Livepeer
+- Tiered memberships to unlock different benefits
+- Engagement-based creator revenue model
+- In-app secondary market for trading editions
+- Launch beta version and iterate with user feedback

@@ -47,12 +47,10 @@ app.use(express.json());
 
 app.get("/users", async (req: Request, res: Response) => {
   const { address } = req.query;
-  console.log("address to fetch: ", address);
   try {
     await mongoClient.connect();
     const usersCollection = await mongoClient.db("playz").collection("users");
     const fetchedUser = await usersCollection.findOne({ _id: address as any });
-    console.log("fetchedUser: ", fetchedUser);
     res.json(fetchedUser);
   } catch (err) {
     console.error(err);
@@ -81,7 +79,6 @@ app.post("/users", async (req: Request, res: Response) => {
       { upsert: true }
     );
 
-    console.log("addedUser: ", addedUser);
     res.json({ message: "User successfully updated" });
   } catch (err) {
     console.error(err);
@@ -163,15 +160,11 @@ app.get("/files/:address", async (req: Request, res: Response) => {
 app.post("/upload", async (req: Request, res: Response) => {
   const files = (req as any).files;
 
-  console.log("request received: ", files);
-
   if (!files) {
     return res.status(400).send({ message: "No file uploaded" });
   }
 
   const address = req.body.address;
-
-  console.log("address fetched: ", address);
 
   const uploadedFile = files.file;
   const filePath = "./uploads/" + uploadedFile.name;
@@ -195,12 +188,8 @@ app.post("/upload", async (req: Request, res: Response) => {
       // Upload to web3.storage
       const fileCID = await client.put(fileToUpload);
 
-      console.log("fileCID: ", fileCID);
-
       // Generate link to the file on web3.storage
       const url = `https://${fileCID}.ipfs.w3s.link/${uploadedFile.name}`;
-
-      console.log("url: ", url);
 
       // Delete the file from server after it's been uploaded to the Web3.Storage
       fs.unlinkSync(filePath);
@@ -239,8 +228,6 @@ app.put("/videos/:videoId/like", async (req, res) => {
 
     const videosCollection = await mongoClient.db("playz").collection("videos");
 
-    console.log(isLiked);
-
     let update;
 
     if (isLiked) {
@@ -264,7 +251,6 @@ app.put("/videos/:videoId/like", async (req, res) => {
         upsert: true,
       }
     );
-    console.log(result);
 
     res.json({ success: true });
   } catch (err) {
@@ -295,7 +281,6 @@ app.put("/videos/:videoId/comment", async (req, res) => {
         upsert: true,
       }
     );
-    console.log(result);
 
     res.json({ success: true });
   } catch (err) {
@@ -323,7 +308,6 @@ app.delete("/videos/:videoId/comment", async (req, res) => {
       { _id: videoId as any },
       update
     );
-    console.log(result);
 
     res.json({ success: true });
   } catch (err) {
