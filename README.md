@@ -1,5 +1,6 @@
-# PLAYZ: Unleash your creative capital
+# Playz: Video-based Decentralized Social Network
 
+![](client/public/landing.png)
 ## Problem statement
 The advent of Web2 revolutionized user interaction, fostering the rapid growth of social media platforms and content creation. Platforms like YouTube offered monetization solutions, effectively turning creators into business entities. However, these platforms leverage user preferences and behaviors as commodities, selling this data back to advertisers. Creators are now realizing that they're renting their audiences from these platforms, making it challenging to transition to more ethical or lucrative digital spaces. In addition to unreliable revenue and issues surrounding content ownership, creators also risk losing their audience's trust with each paid post, reducing their authenticity and engagement. The current Web2 creator economy, reliant on opaque, advertising-based business models, is causing creators to question the disproportionate influence these platforms have over their work and compensation, indicating a rising legitimacy crisis.
 
