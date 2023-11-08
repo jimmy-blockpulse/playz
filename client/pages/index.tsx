@@ -4,7 +4,7 @@ import { useAuth } from "@components/AuthProvider";
 import { VStack, Spinner } from "@chakra-ui/react";
 
 // export const API_URL = "http://localhost:8888";
-export const API_URL = "http://172.20.10.3:8888";
+export const API_URL = "https://playz-server.onrender.com";
 
 function App() {
   const { isSignedIn, fetchedUser, isFetchedUserLoading } = useAuth();
