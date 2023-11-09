@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { publicProvider } from "wagmi/providers/public";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { goerli } from "wagmi/chains";
+import { polygonZkEvmTestnet } from "wagmi/chains";
 import Head from "next/head";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { AuthProvider } from "@components/AuthProvider";
 
-const { chains, provider } = configureChains([goerli], [publicProvider()]);
+const { chains, provider } = configureChains(
+  [polygonZkEvmTestnet],
+  [publicProvider()]
+);
 
 const wagmiClient = createClient({
   autoConnect: true,
