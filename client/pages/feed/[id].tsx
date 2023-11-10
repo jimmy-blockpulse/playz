@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import VideoCard from "@components/VideoCard";
 import styles from "@styles/Home.module.css";
 import axios from "axios";
@@ -23,7 +23,7 @@ function Feed() {
 
   const [videosLoaded, setVideosLoaded] = useState(false);
 
-  const getVideos = async () => {
+  const getVideos = useCallback(async () => {
     try {
       if (id && id === "jeremystarr_") {
         setvideos([
@@ -48,7 +48,7 @@ function Feed() {
       console.error(e);
       setVideosLoaded(false);
     }
-  };
+  }, [address, id]);
 
   const getCreators = async () => {
     try {
@@ -62,7 +62,7 @@ function Feed() {
   useEffect(() => {
     getVideos();
     getCreators();
-  }, [id]);
+  }, [getVideos, id]);
 
   if (uploadedFile)
     return (

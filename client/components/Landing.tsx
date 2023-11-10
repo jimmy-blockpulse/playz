@@ -305,7 +305,7 @@ function SignUp() {
             <VStack position="absolute" pt="80px" pb="80px">
               <Text className={styles.welcome}>Welcome!</Text>
               <Text className={styles.createHeader}>
-                You've successfully created your profile.
+                You&apos;ve successfully created your profile.
               </Text>
             </VStack>
             <VStack className={styles.centeredText2}>

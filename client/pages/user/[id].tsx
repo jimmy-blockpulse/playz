@@ -32,8 +32,6 @@ function User() {
   const { isSignedIn, fetchedUser } = useAuth();
   const { data: signer, isError } = useSigner();
 
-  if (!isSignedIn || !fetchedUser) return <Landing />;
-
   const purchaseMembership = useCallback(async () => {
     try {
       const contract = new ethers.Contract(
@@ -48,7 +46,9 @@ function User() {
     } catch (e) {
       console.log(e);
     }
-  }, [signer]);
+  }, [fetchedUser.profileAddress, signer]);
+
+  if (!isSignedIn || !fetchedUser) return <Landing />;
 
   return (
     <VStack w="100%">
