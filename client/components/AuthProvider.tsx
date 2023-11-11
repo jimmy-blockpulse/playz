@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useConnect, useAccount, useSignMessage } from "wagmi";
@@ -23,7 +24,6 @@ type AuthContextType = {
   fetchUser: () => void;
   handleSignIn: () => void;
   handleSignOut: () => void;
-  isFetchedUserLoading: boolean;
 };
 
 const initContext: AuthContextType = {
@@ -32,7 +32,6 @@ const initContext: AuthContextType = {
   fetchUser: () => {},
   handleSignIn: () => {},
   handleSignOut: () => {},
-  isFetchedUserLoading: false,
 };
 
 const AuthContext = createContext<AuthContextType>(initContext);
@@ -43,7 +42,6 @@ export function AuthProvider({ children }: any) {
   const { connect } = useConnect();
   const { address } = useAccount();
 
-  const [isFetchedUserLoading, setFetchedUserLoading] = useState(true);
   const [fetchedUser, setFetchedUser] = useState(null);
 
   const [isSignedIn, setSignedIn] = useState(() => {
@@ -54,13 +52,13 @@ export function AuthProvider({ children }: any) {
   const { isSuccess, signMessage } = useSignMessage({
     message: "Welcome to Playz! Empowering Creators, One Token at a Time.",
   });
-  const connector = new InjectedConnector();
+  const connector = useMemo(() => new InjectedConnector(), []);
 
   const handleSignIn = useCallback(() => {
     if (!connector) return null;
     if (!address) connect({ connector });
     signMessage();
-  }, [connector, address]);
+  }, [connector, address, connect, signMessage]);
 
   const handleSignOut = useCallback(() => {
     setSignedIn(false);
@@ -74,31 +72,28 @@ export function AuthProvider({ children }: any) {
     }
   }, [isSuccess]);
 
-  function fetchUser() {
-    setFetchedUserLoading(true);
+  const fetchUser = useCallback(() => {
     if (address) {
       axios
         .get(`${API_URL}/users`, { params: { address } })
         .then((response) => {
-          console.log("response.data: ", response.data);
+          console.log("fetch user response.data: ", response.data);
           if (response.data) {
             setFetchedUser(response.data);
           } else {
             setFetchedUser(null);
           }
-          setFetchedUserLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
           setFetchedUser(null);
-          setFetchedUserLoading(false);
         });
     }
-  }
+  }, [address]);
 
   useEffect(() => {
     fetchUser();
-  }, [address]);
+  }, [address, fetchUser]);
 
   return (
     <AuthContext.Provider
@@ -108,7 +103,6 @@ export function AuthProvider({ children }: any) {
         fetchUser,
         handleSignIn,
         handleSignOut,
-        isFetchedUserLoading,
       }}
     >
       {children}
