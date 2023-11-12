@@ -267,7 +267,7 @@ function SignUp() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="video/*,image/*"
                   capture="environment"
                   style={{ display: "none" }}
                   onChange={handleFileChange}
