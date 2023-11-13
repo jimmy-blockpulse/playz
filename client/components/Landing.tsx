@@ -268,7 +268,6 @@ function SignUp() {
                   ref={fileInputRef}
                   type="file"
                   accept="video/*,image/*"
-                  capture="environment"
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                 />
