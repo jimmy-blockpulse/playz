@@ -5,6 +5,13 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { publicProvider } from "wagmi/providers/public";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import Head from "next/head";
+import {
+  xdcTestnet,
+  celoAlfajores,
+  filecoinHyperspace,
+  arbitrumGoerli,
+  lineaTestnet,
+} from "viem/chains";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { AuthProvider } from "@components/AuthProvider";
 
@@ -60,8 +67,70 @@ const scrollSepoliaTestnet = {
   testnet: true,
 };
 
+const mantleTestnet = {
+  id: 5001,
+  name: "Mantle Testnet",
+  network: "mantle-testnet",
+  nativeCurrency: {
+    name: "Mantle",
+    symbol: "MNT",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.testnet.mantle.xyz"],
+    },
+    public: {
+      http: ["https://rpc.testnet.mantle.xyz"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://explorer.mantle.xyz/",
+    },
+  },
+  testnet: true,
+};
+
+const neonDevnet = {
+  id: 245022926,
+  name: "Neon Testnet",
+  network: "neon-testnet",
+  nativeCurrency: {
+    name: "Neon",
+    symbol: "NEON",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://devnet.neonevm.org"],
+    },
+    public: {
+      http: ["https://devnet.neonevm.org"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://neon-devnet.blockscout.com/",
+    },
+  },
+  testnet: true,
+};
+
 const { chains, provider } = configureChains(
-  [polygonZkEvmTestnet, scrollSepoliaTestnet],
+  [
+    polygonZkEvmTestnet,
+    scrollSepoliaTestnet,
+    xdcTestnet,
+    celoAlfajores,
+    mantleTestnet,
+    filecoinHyperspace,
+    neonDevnet,
+    arbitrumGoerli,
+    lineaTestnet,
+  ],
   [publicProvider()]
 );
 
