@@ -3,14 +3,10 @@ import styles from "@styles/Home.module.css";
 import useIsInViewport from "@hooks/useIsInViewport";
 import {
   FaArrowUp,
-  FaBookmark,
   FaCommentDots,
   FaHeart,
-  FaMoneyBill,
   FaShare,
   FaShoppingBag,
-  FaShoppingBasket,
-  FaUser,
 } from "react-icons/fa";
 import {
   VStack,
@@ -200,6 +196,7 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
   };
 
   const handleBuy = useCallback(async () => {
+    if (!fetchedUser) return;
     try {
       const contract = new ethers.Contract(
         fetchedUser.profileAddress,
@@ -207,8 +204,9 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
         signer
       );
 
-      const nftResult = await contract["purchaseEdition(uint256,uint256)"](
-        BigNumber.from(1),
+      const tokenId = await contract["currentTokenId()"]();
+      const nftResult = await contract["mintEdition(uint256,uint256)"](
+        BigNumber.from(tokenId),
         BigNumber.from(1)
       );
 
@@ -216,7 +214,7 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
     } catch (e) {
       console.log(e);
     }
-  }, [signer]);
+  }, [fetchedUser, signer]);
 
   useEffect(() => {
     if (!isInViewport) {

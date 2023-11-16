@@ -10,9 +10,11 @@ import {
   FaVideo,
 } from "react-icons/fa";
 import Link from "next/link";
+import { useAuth } from "./AuthProvider";
 
 const MenuBar = ({ setUploadedFile, setMediaURL }) => {
   const [selectedIcon, setSelectedIcon] = useState("home");
+  const { fetchedUser } = useAuth();
   const fileInputRef = useRef(null);
 
   const getColor = (iconKey) =>
@@ -67,7 +69,13 @@ const MenuBar = ({ setUploadedFile, setMediaURL }) => {
           color={getColor("comment")}
           onClick={() => setSelectedIcon("comment")}
         />
-        <Link href="/user/2">
+        <Link
+          href={
+            fetchedUser && fetchedUser.username !== "jeremystarr_"
+              ? "/user/1"
+              : "/user/2"
+          }
+        >
           <a>
             <FaUserAlt size={25} color={getColor("user")} />
           </a>

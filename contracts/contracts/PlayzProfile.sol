@@ -43,6 +43,10 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
 
     constructor(string memory _profileURI) ERC1155(_profileURI) {
         setProfileURI(_profileURI);
+        _setURI(0, "");
+        _setSupply(0, 10000);
+        _setPrice(0, 0);
+        _setRoyaltyPercentage(0, 0);
     }
 
     modifier _isMember() {
@@ -83,7 +87,7 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         _setSupply(_tokenId, _tokenSupply);
         _setPrice(_tokenId, _tokenPrice);
         _setRoyaltyPercentage(_tokenId, _royaltyPercentage);
-        if (_setMemberEdition) _setMemberEdition(_tokenId);
+        if (_setMemberEdition) setMemberEdition(_tokenId);
         emit EditionCreated(
             _tokenId,
             _tokenURI,
@@ -93,7 +97,7 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
         );
     }
 
-    function _setMemberEdition(uint256 _tokenId) internal onlyOwner {
+    function setMemberEdition(uint256 _tokenId) internal onlyOwner {
         _isMemberEdition[_tokenId] = true;
         emit MemberEditionSet(_tokenId);
     }
@@ -113,6 +117,10 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
     ) internal {
         require(_royaltyPercentage <= 100, "Royalty cannot be more than 100%");
         _tokenRoyalties[_tokenId] = _royaltyPercentage;
+    }
+
+    function currentTokenId() public view returns (uint256) {
+        return tokenCounter.current();
     }
 
     function nextTokenId() private returns (uint256) {
@@ -146,7 +154,6 @@ contract PlayzProfile is ERC1155URIStorage, Ownable, ReentrancyGuard {
     }
 
     function mintMembership() external payable nonReentrant {
-        require(balanceOf(msg.sender, 0) == 0, "Already minted a membership");
         require(
             _tokenCounts[0] + 1 <= _tokenSupplies[0],
             "Exceeding max supply"

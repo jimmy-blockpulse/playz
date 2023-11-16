@@ -21,6 +21,7 @@ import { TokenMetadata } from "@utils/types";
 import { client } from "@utils/utils";
 import { useAuth } from "./AuthProvider";
 import PlayzProfile from "@data/PlayzProfile.json";
+import { useRouter } from "next/router";
 
 function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
   const { fetchedUser } = useAuth();
@@ -30,6 +31,7 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
   const [tokenPrice, setTokenPrice] = useState("0");
   const [tokenRoyalty, setTokenRoyalty] = useState(0);
   const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDescriptionChange = (e: any) => {
     setDescription(e.target.value);
@@ -61,11 +63,13 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
   async function uploadJSON() {
     const imageCID = await uploadImage();
 
-    const jsonObject: TokenMetadata = {
+    const jsonObject = {
+      _id: Math.round(Math.random() * 999999999) + 100000000,
       description: description,
-      image:
-        imageCID ??
-        "https://bafybeibo7t47x7nabz4wbgrmvfnrk3hxc6nuxae62m4fxm3b5zvzw2uvxq.ipfs.w3s.link/hi.jpg",
+      url: imageCID,
+      video_files: [{ link: imageCID }],
+      comments: {},
+      likes: {},
     };
 
     const blob = new Blob([JSON.stringify(jsonObject)], {
@@ -110,6 +114,7 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
     const { jsonLink: uploadedJSON, jsonObject: metadata } = await uploadJSON();
     console.log("TokenMetadata successfully uploaded to IPFS: ", uploadedJSON);
     const nftResult = await handleMint(uploadedJSON);
+    router.push("/feed/1");
     setLoading(false);
   }
 

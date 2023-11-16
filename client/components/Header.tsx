@@ -1,14 +1,21 @@
 import { useState } from "react";
 import styles from "@styles/Header.module.css";
-import { HStack, Spacer, Text, VStack } from "@chakra-ui/react";
+import { HStack, Input, Spacer, Text, VStack } from "@chakra-ui/react";
 import { FaEllipsisH, FaSearch } from "react-icons/fa";
+import Link from "next/link";
 
 const Header = ({ isFeed }) => {
   const [selectedTab, setSelectedTab] = useState("foryou");
+  const [isSearchBar, setSearchBar] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   const handleTabClick = (tabName) => {
     setSelectedTab(tabName);
   };
+
+  function handleInputChange(e) {
+    setInputValue(e.target.value);
+  }
 
   return (
     <HStack
@@ -24,10 +31,43 @@ const Header = ({ isFeed }) => {
       </HStack>
       <Spacer />
       <HStack className={styles.navCenterSection}>
-        {isFeed ? (
+        {isSearchBar ? (
+          <VStack>
+            <HStack className={styles.pill} gap={0}>
+              <HStack className={styles.followingPill}>
+                <Input
+                  border="none"
+                  _focus={{ outline: 0 }}
+                  _active={{ border: "none" }}
+                  fontSize="12px"
+                  onChange={handleInputChange}
+                  value={inputValue}
+                />
+              </HStack>
+            </HStack>
+            {inputValue === "playzboy" && (
+              <Link href="/feed/1">
+                <HStack className={styles.pill} gap={0}>
+                  <HStack className={styles.followingPill}>
+                    <Text>@playzboy</Text>
+                  </HStack>
+                </HStack>
+              </Link>
+            )}
+            {inputValue === "jeremystarr_" && (
+              <Link href="/user/2">
+                <HStack className={styles.pill} gap={0}>
+                  <HStack className={styles.followingPill}>
+                    <Text>@jeremystarr_</Text>
+                  </HStack>
+                </HStack>
+              </Link>
+            )}
+          </VStack>
+        ) : isFeed ? (
           <HStack className={styles.pill} gap={0}>
             <HStack className={styles.followingPill}>
-              <Text>My Posts</Text>
+              <Text>Feed</Text>
             </HStack>
           </HStack>
         ) : (
@@ -51,7 +91,10 @@ const Header = ({ isFeed }) => {
       </HStack>
       <Spacer />
       <HStack className={styles.navRightSection}>
-        <VStack className={styles.search}>
+        <VStack
+          className={styles.search}
+          onClick={() => setSearchBar(!isSearchBar)}
+        >
           <FaSearch size={15} />
         </VStack>
       </HStack>

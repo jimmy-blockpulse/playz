@@ -10,11 +10,18 @@ import Navbar from "@components/Navbar";
 import CreateEdition from "@components/CreateEdition";
 import { useRouter } from "next/router";
 import jeremy from "@data/jeremy.json";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
+import { BigNumber, ethers } from "ethers";
+import PlayzProfile from "@data/PlayzProfile.json";
+import { useAuth } from "@components/AuthProvider";
+import newVideo from "public/newVideo.json";
 
 function Feed() {
   const router = useRouter();
+  const { fetchedUser } = useAuth();
+  const { data: signer, isError } = useSigner();
   const { id } = router.query;
+  const [fetchedURI, setFetchedURI] = useState("");
   const { address } = useAccount();
   const [videos, setvideos] = useState([]);
   const [creators, setCreators] = useState([]);
@@ -25,7 +32,7 @@ function Feed() {
 
   const getVideos = useCallback(async () => {
     try {
-      if (id && id === "jeremystarr_") {
+      if (id && id === "2") {
         setvideos([
           {
             comments: {},
@@ -59,10 +66,23 @@ function Feed() {
     }
   };
 
+  const getVideo = useCallback(async () => {
+    if (!fetchedUser) return;
+    const contract = new ethers.Contract(
+      fetchedUser.profileAddress,
+      PlayzProfile.abi,
+      signer
+    );
+    const tokenId = await contract["currentTokenId()"]();
+    const uri = await contract["uri(uint256)"](BigNumber.from(tokenId));
+    setFetchedURI(uri);
+  }, [fetchedUser, signer]);
+
   useEffect(() => {
+    getVideo();
     getVideos();
     getCreators();
-  }, [getVideos, id]);
+  }, [getVideo, getVideos, id]);
 
   if (uploadedFile)
     return (
