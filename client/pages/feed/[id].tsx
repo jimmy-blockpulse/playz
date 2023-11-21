@@ -14,7 +14,6 @@ import { useAccount, useSigner } from "wagmi";
 import { BigNumber, ethers } from "ethers";
 import PlayzProfile from "@data/PlayzProfile.json";
 import { useAuth } from "@components/AuthProvider";
-import newVideo from "public/newVideo.json";
 
 function Feed() {
   const router = useRouter();
@@ -74,6 +73,7 @@ function Feed() {
       signer
     );
     const tokenId = await contract["currentTokenId()"]();
+    console.log(tokenId);
     const uri = await contract["uri(uint256)"](BigNumber.from(tokenId));
     setFetchedURI(uri);
   }, [fetchedUser, signer]);

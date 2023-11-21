@@ -85,6 +85,8 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
 
   const handleMint = useCallback(
     async (cid: string) => {
+      if (!fetchedUser) return;
+
       try {
         const contract = new ethers.Contract(
           fetchedUser.profileAddress,
@@ -93,12 +95,13 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
         );
 
         const nftResult = await contract[
-          "createEdition(string,uint256,uint256,uint256)"
+          "createEdition(string,uint256,uint256,uint256,bool)"
         ](
           cid,
           BigNumber.from(tokenSupply),
           ethers.utils.parseEther(tokenPrice),
-          BigNumber.from(tokenRoyalty)
+          BigNumber.from(tokenRoyalty),
+          false
         );
 
         return nftResult;
@@ -106,7 +109,7 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
         console.log(e);
       }
     },
-    [signer]
+    [fetchedUser, signer, tokenPrice, tokenRoyalty, tokenSupply]
   );
 
   async function handleListAsset() {
@@ -114,7 +117,7 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
     const { jsonLink: uploadedJSON, jsonObject: metadata } = await uploadJSON();
     console.log("TokenMetadata successfully uploaded to IPFS: ", uploadedJSON);
     const nftResult = await handleMint(uploadedJSON);
-    router.push("/feed/1");
+    if (nftResult) router.push("/feed/1");
     setLoading(false);
   }
 

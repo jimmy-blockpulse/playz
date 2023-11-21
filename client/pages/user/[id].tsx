@@ -21,7 +21,7 @@ import { FaFilm, FaGift, FaHeart, FaVideo } from "react-icons/fa";
 import { useAuth } from "@components/AuthProvider";
 import Landing from "@components/Landing";
 import { useCallback, useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import PlayzProfile from "@data/PlayzProfile.json";
 import { useAccount, useSigner } from "wagmi";
 
@@ -48,7 +48,7 @@ function User() {
       );
 
       const balance = await contract["balanceOf(address,uint256)"](address, 0);
-      setMember(!!balance);
+      setMember(balance.toString() === "1");
     } catch (e) {
       console.log(e);
     }
@@ -157,7 +157,6 @@ function UserHeader({ id, fetchedUser, purchaseMembership, isMember }) {
           >
             Verified Member
           </Button>
-
           <Button
             className={styles.giftBtn}
             onClick={async () => {
@@ -181,7 +180,15 @@ function UserHeader({ id, fetchedUser, purchaseMembership, isMember }) {
           >
             Become a member
           </Button>
-          <Button className={styles.giftBtn}>
+          <Button
+            className={styles.giftBtn}
+            onClick={async () => {
+              await signer.sendTransaction({
+                to: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
+                value: ethers.utils.parseEther("0.0001"),
+              });
+            }}
+          >
             <FaGift size={15} />
           </Button>
         </HStack>
