@@ -148,7 +148,7 @@ function UserHeader({ id, fetchedUser, purchaseMembership, isMember }) {
     <VStack pt="5rem" pb=".5rem">
       <Image alt="hi" src={fetchedUser.image} className={styles.profileImg} />
       <Text>@{fetchedUser.username}</Text>
-      {isMember && (
+      {isMember && fetchedUser.username !== "jeremystarr_" && (
         <HStack mt="0.1rem" mb="0.25rem">
           <Button
             className={styles.memberBtn}
