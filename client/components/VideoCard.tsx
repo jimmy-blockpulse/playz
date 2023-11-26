@@ -13,7 +13,6 @@ import {
   Text,
   useDisclosure,
   Input,
-  Box,
   HStack,
   Image,
   useToast,
