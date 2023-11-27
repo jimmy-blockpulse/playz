@@ -239,7 +239,7 @@ function UserContent({ fetchedUser, isMember }) {
     </VStack>
   ) : (
     <SimpleGrid columns={3} spacing={1} className={styles.grid}>
-      {isMember && (
+      {isMember && fetchedUser && fetchedUser.username != "jeremystarr_" && (
         <VStack
           className={styles.thumbnailContainer}
           onClick={() => router.push("/feed/2")}
@@ -253,7 +253,12 @@ function UserContent({ fetchedUser, isMember }) {
       )}
       {jeremy.map(({ video_files }, i) => (
         <VStack className={styles.thumbnailContainer} key={i}>
-          <video src={video_files[0].link} className={styles.thumbnail}></video>
+          <Image
+            alt="image"
+            src={video_files[0].image}
+            className={styles.thumbnail}
+          ></Image>
+          {/* <video src={video_files[0].link} className={styles.thumbnail}></video> */}
           <HStack className={styles.thumbnailCaption}>
             <FaHeart size="12px" />
             <Text fontSize="12px">{Math.round(Math.random() * 400) + 95}</Text>
