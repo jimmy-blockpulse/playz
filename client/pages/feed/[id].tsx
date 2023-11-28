@@ -72,9 +72,7 @@ function Feed() {
       PlayzProfile.abi,
       signer
     );
-    const tokenId = await contract["currentTokenId()"]();
-    console.log(tokenId);
-    const uri = await contract["uri(uint256)"](BigNumber.from(tokenId));
+    const uri = await contract["uri(uint256)"](BigNumber.from(1));
     setFetchedURI(uri);
   }, [fetchedUser, signer]);
 

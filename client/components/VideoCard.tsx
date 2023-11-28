@@ -203,9 +203,8 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
         signer
       );
 
-      const tokenId = await contract["currentTokenId()"]();
       const nftResult = await contract["mintEdition(uint256,uint256)"](
-        BigNumber.from(tokenId),
+        BigNumber.from(1),
         BigNumber.from(1)
       );
 
