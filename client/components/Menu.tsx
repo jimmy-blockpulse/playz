@@ -1,20 +1,17 @@
 import { useState, useRef } from "react";
 import styles from "@styles/Menu.module.css";
-import { Button, HStack, VStack } from "@chakra-ui/react";
+import { HStack, VStack } from "@chakra-ui/react";
 import {
   FaCommentDots,
   FaHeart,
   FaHome,
-  FaMoneyBill,
   FaUserAlt,
   FaVideo,
 } from "react-icons/fa";
 import Link from "next/link";
-import { useAuth } from "./AuthProvider";
 
 const MenuBar = ({ setUploadedFile, setMediaURL }) => {
   const [selectedIcon, setSelectedIcon] = useState("home");
-  const { fetchedUser } = useAuth();
   const fileInputRef = useRef(null);
 
   const getColor = (iconKey) =>
@@ -69,13 +66,7 @@ const MenuBar = ({ setUploadedFile, setMediaURL }) => {
           color={getColor("comment")}
           onClick={() => setSelectedIcon("comment")}
         />
-        <Link
-          href={
-            fetchedUser && fetchedUser.username !== "jeremystarr_"
-              ? "/user/1"
-              : "/user/2"
-          }
-        >
+        <Link href={`/user/${"0xabc123"}`}>
           <a>
             <FaUserAlt size={25} color={getColor("user")} />
           </a>

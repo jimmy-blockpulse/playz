@@ -57,7 +57,7 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
   const [newComment, setNewComment] = useState("");
   const [isBookmarked, setBookmarked] = useState(false);
 
-  const { fetchedUser } = useAuth();
+  const { fetchedUser, fetchedUser1 } = useAuth();
 
   const getRandomItem = (array) => {
     return array[Math.floor(Math.random() * array.length)];
@@ -196,9 +196,12 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
 
   const handleBuy = useCallback(async () => {
     if (!fetchedUser) return;
+
     try {
       const contract = new ethers.Contract(
-        fetchedUser.profileAddress,
+        fetchedUser.username === "jeremystarr_"
+          ? fetchedUser1.profileAddress
+          : fetchedUser.profileAddress,
         PlayzProfile.abi,
         signer
       );
@@ -238,6 +241,7 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
       {creator && (
         <HStack className={styles.creatorContainer}>
           <Image
+            alt="hi"
             src={creator.picture.thumbnail}
             className={styles.creatorAvatar}
           />

@@ -17,7 +17,7 @@ import { useAuth } from "@components/AuthProvider";
 
 function Feed() {
   const router = useRouter();
-  const { fetchedUser } = useAuth();
+  const { fetchedUser, fetchedUser1, fetchUser1 } = useAuth();
   const { data: signer, isError } = useSigner();
   const { id } = router.query;
   const [fetchedVideo, setFetchedVideo] = useState(null);
@@ -47,6 +47,7 @@ function Feed() {
         setVideosLoaded(true);
       } else {
         const response = await axios.get(`${API_URL}/videos/${address}`);
+        console.log("response. data: ", response);
         setvideos((oldVideos) => [...oldVideos, ...response.data]);
         setVideosLoaded(true);
       }
@@ -66,22 +67,24 @@ function Feed() {
   };
 
   const getVideo = useCallback(async () => {
-    if (!fetchedUser) return;
+    if (!fetchedUser1) return;
+
     const contract = new ethers.Contract(
-      fetchedUser.profileAddress,
+      fetchedUser1.profileAddress,
       PlayzProfile.abi,
       signer
     );
     const uri = await contract["uri(uint256)"](BigNumber.from(1));
     const response = await axios.get(uri);
     setFetchedVideo(response.data);
-  }, [fetchedUser, signer]);
+  }, [fetchedUser1, signer]);
 
   useEffect(() => {
     getVideo();
     getVideos();
     getCreators();
-  }, [getVideo, getVideos, id]);
+    if (!fetchedUser1) fetchUser1();
+  }, [fetchUser1, fetchedUser1, getVideo, getVideos, id]);
 
   if (uploadedFile)
     return (
@@ -95,26 +98,26 @@ function Feed() {
       </main>
     );
 
-  console.log("fetchedVideo: ", fetchedVideo);
-
   return (
     <main className={styles.main}>
       <Header isFeed />
       <div className={styles.sliderContainer}>
-        {fetchedVideo && (
-          <VideoCard
-            index={id}
-            video={fetchedVideo}
-            lastVideoIndex={videos.length - 1}
-            getVideos={getVideos}
-            creator={{
-              name: { first: "Jeremy", last: "Starr" },
-              location: { city: "North Hollywood" },
-              picture: { thumbnail: "/jeremy.jpg" },
-            }}
-          />
-        )}
-        {videos.length > 0 ? (
+        {fetchedVideo ? (
+          [fetchedVideo, fetchedVideo].map((v, id) => (
+            <VideoCard
+              key={id}
+              index={id}
+              video={v}
+              lastVideoIndex={1}
+              getVideos={getVideos}
+              creator={{
+                name: { first: "Playzboy", last: "" },
+                location: { city: "Unknown" },
+                picture: { thumbnail: "/playzboy.png" },
+              }}
+            />
+          ))
+        ) : videos.length > 0 ? (
           <>
             {videos.slice(0, 10).map((video, id) => (
               <VideoCard

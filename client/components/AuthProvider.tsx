@@ -1,5 +1,4 @@
-import axios from "axios";
-import { API_URL } from "pages";
+import { Users } from "@data/data";
 import {
   createContext,
   useCallback,
@@ -10,17 +9,12 @@ import {
 } from "react";
 import { useConnect, useAccount, useSignMessage } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
-
-type User = {
-  bio: string;
-  username: string;
-  profilePicture: string;
-  profileAddress: string;
-};
+import Landing from "./Landing";
+import { User } from "@utils/types";
 
 type AuthContextType = {
   isSignedIn: boolean;
-  fetchedUser: User | null;
+  user: User | null;
   fetchUser: () => void;
   handleSignIn: () => void;
   handleSignOut: () => void;
@@ -28,7 +22,7 @@ type AuthContextType = {
 
 const initContext: AuthContextType = {
   isSignedIn: false,
-  fetchedUser: null,
+  user: null,
   fetchUser: () => {},
   handleSignIn: () => {},
   handleSignOut: () => {},
@@ -42,16 +36,17 @@ export function AuthProvider({ children }: any) {
   const { connect } = useConnect();
   const { address } = useAccount();
 
-  const [fetchedUser, setFetchedUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   const [isSignedIn, setSignedIn] = useState(() => {
-    const cachedStatus = window.localStorage.getItem("PLAYZ_IS_SIGNED_IN");
+    const cachedStatus = window.localStorage.getItem("playz.isSignedIn");
     return cachedStatus === "true";
   });
 
-  const { isSuccess, signMessage } = useSignMessage({
+  const { data, isSuccess, signMessage } = useSignMessage({
     message: "Welcome to Playz! Empowering Creators, One Token at a Time.",
   });
+
   const connector = useMemo(() => new InjectedConnector(), []);
 
   const handleSignIn = useCallback(() => {
@@ -62,44 +57,49 @@ export function AuthProvider({ children }: any) {
 
   const handleSignOut = useCallback(() => {
     setSignedIn(false);
-    window.localStorage.setItem("PLAYZ_IS_SIGNED_IN", "false");
+    window.localStorage.setItem("playz.isSignedIn", "false");
   }, []);
 
   useEffect(() => {
     if (isSuccess) {
       setSignedIn(true);
-      window.localStorage.setItem("PLAYZ_IS_SIGNED_IN", "true");
+      window.localStorage.setItem("playz.isSignedIn", "true");
     }
   }, [isSuccess]);
 
   const fetchUser = useCallback(() => {
     if (address) {
-      axios
-        .get(`${API_URL}/users`, { params: { address } })
-        .then((response) => {
-          console.log("fetch user response.data: ", response.data);
-          if (response.data) {
-            setFetchedUser(response.data);
-          } else {
-            setFetchedUser(null);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          setFetchedUser(null);
-        });
+      //  TODO: bring back legit logic
+      //   axios
+      //     .get(`${API_URL}/users`, { params: { address } })
+      //     .then((response) => {
+      //       console.log("fetch user response.data: ", response.data);
+      //       if (response.data) {
+      //         setUser(response.data);
+      //       } else {
+      //         setUser(null);
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error fetching user data:", error);
+      //       setUser(null);
+      //     });
+      const fetchedUser = Users.find((u) => u.address == address);
+      setUser(fetchedUser);
     }
   }, [address]);
 
   useEffect(() => {
-    fetchUser();
-  }, [address, fetchUser]);
+    if (!user) fetchUser();
+  }, [address, fetchUser, user]);
+
+  if (!isSignedIn || !user) return <Landing />;
 
   return (
     <AuthContext.Provider
       value={{
         isSignedIn,
-        fetchedUser,
+        user,
         fetchUser,
         handleSignIn,
         handleSignOut,

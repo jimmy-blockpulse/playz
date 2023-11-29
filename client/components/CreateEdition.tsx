@@ -117,7 +117,10 @@ function CreateEdition({ uploadedFile, mediaURL, setUploadedFile }) {
     const { jsonLink: uploadedJSON, jsonObject: metadata } = await uploadJSON();
     console.log("TokenMetadata successfully uploaded to IPFS: ", uploadedJSON);
     const nftResult = await handleMint(uploadedJSON);
-    if (nftResult) router.push("/feed/1");
+    if (nftResult) {
+      if (fetchedUser.username !== "jeremystarr_") router.push("/feed/1");
+      else router.push("/");
+    }
     setLoading(false);
   }
 

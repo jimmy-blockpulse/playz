@@ -5,9 +5,9 @@ import { useAuth } from "@components/AuthProvider";
 export const API_URL = "https://playz-server.onrender.com";
 
 function App() {
-  const { isSignedIn, fetchedUser } = useAuth();
+  const { isSignedIn, user } = useAuth();
 
-  return !isSignedIn || !fetchedUser ? <Landing /> : <Home />;
+  return !isSignedIn || !user ? <Landing /> : <Home />;
 }
 
 export default App;

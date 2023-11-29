@@ -1,16 +1,20 @@
 # Playz: Video-based Decentralized Social Network
 
 ![](client/public/landing.png)
+
 ## Problem statement
-The advent of Web2 revolutionized user interaction, fostering the rapid growth of social media platforms and content creation. Platforms like YouTube offered monetization solutions, effectively turning creators into business entities. However, these platforms leverage user preferences and behaviors as commodities, selling this data back to advertisers. Creators are now realizing that they're renting their audiences from these platforms, making it challenging to transition to more ethical or lucrative digital spaces. In addition to unreliable revenue and issues surrounding content ownership, creators also risk losing their audience's trust with each paid post, reducing their authenticity and engagement. The current Web2 creator economy, reliant on opaque, advertising-based business models, is causing creators to question the disproportionate influence these platforms have over their work and compensation, indicating a rising legitimacy crisis.
+The evolution of Web2 significantly changed user interaction dynamics, leading to the rise of social media platforms and content creation. Platforms like YouTube introduced monetization, transforming creators into business entities. However, these platforms commodify user data, selling it to advertisers. Creators face challenges in maintaining their audience's loyalty and authenticity due to the platforms' control over audience engagement and revenue models. This has highlighted a growing crisis in the Web2 creator economy, where issues of content ownership and ethical monetization practices are increasingly questioned.
 
-## What it does
+## Intellectual Property as a Real-World Asset
+Intellectual property (IP) is a critical real-world asset, especially for creators in the digital age. Recognizing IP as an asset allows for its valuation, protection, and monetization in ways that traditional Web2 platforms have failed to address adequately. By considering IP as an asset, creators can leverage their work for more sustainable and equitable economic benefits.
 
-Playz is an innovative, decentralized social media platform that integrates the best of Web2 and Web3 technologies. It provides a unique space for artists and creators to publish to, and engage with, their fans via exclusive token-gated access and experiences. Built with a TikTok-style user interface, Playz offers an ecosystem of features including community chat, live streaming, and a social marketplace. It functions as an NFT super-app, enabling the creation, minting, and community building aspects of NFTs all under one roof. All the while, bringing content ownership back into the hands of the creator, not the advertising middlemen nor the value-extracting platforms.
+## What Playz does
+
+Playz is a trailblazing decentralized social media platform that marries the best of Web2 and Web3. It revolutionizes content ownership by allowing creators to tokenize their IP, offering a robust platform where artists and creators can directly engage with their fans through token-gated access. This model ensures that creators have full control and ownership of their IP, turning their creative output into a tangible, tradeable asset. Features include community chat, live streaming, and a social marketplace, all underpinned by NFT technology that foregrounds IP rights and value.
 
 ## Inspiration
 
-Our inspiration for Playz stemmed from recognizing the potential of Web3 and decentralized systems, and the desire to empower creators by combining this with the familiarity and usability of Web2 platforms. We were also deeply inspired by the idea of community ownership and the notion that communities could come together to create, own, and bring their ideas to life.
+The genesis of Playz lies in harnessing the untapped potential of Web3 and decentralized systems. We're driven by the ambition to empower creators by recognizing and tokenizing their IP. This approach aligns with our belief in community ownership, where creators and their communities collaboratively foster and monetize creative works.
 
 ## How we built it
 
@@ -20,14 +24,15 @@ Our inspiration for Playz stemmed from recognizing the potential of Web3 and dec
 - Contracts: Solidity v8.17.0
 - File Storage: IPFS, web3.storage
 - User Interface: Chakra UI
+- Blockchain: Klaytn 2.0
 
 ## What's next for Playz
 
-Looking ahead, we have several plans in the pipeline:
-- Mobile-first application using React Native
-- Subscription-based Memberships (i.e. On-chain Patreon)
-- Live-streaming feature using Livepeer
-- Tiered memberships to unlock different benefits
+Our vision for Playz includes:
+- Mobile-first application development using React Native
+- Subscription-based memberships for on-chain revenue generation
+- Live-streaming functionality with Livepeer
+- Tiered memberships for varied access and benefits
 - Engagement-based creator revenue model
-- In-app secondary market for trading editions
-- Launch beta version and iterate with user feedback
+- In-app market for trading tokenized IP
+- Beta launch and iterative improvements based on user feedback

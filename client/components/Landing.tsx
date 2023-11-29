@@ -1,20 +1,27 @@
-import { Button, VStack, Text, Box, HStack, Spinner } from "@chakra-ui/react";
+import {
+  Button,
+  VStack,
+  Text,
+  Box,
+  HStack,
+  Spinner,
+  Image,
+} from "@chakra-ui/react";
 import styles from "@styles/Main.module.css";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import { FaPlusCircle, FaUser } from "react-icons/fa";
 import { ethers } from "ethers";
 import PlayzProfile from "@data/PlayzProfile.json";
 import { useAccount, useSigner } from "wagmi";
-import { abridgeAddress, client } from "@utils/utils";
+import { client } from "@utils/utils";
 import axios from "axios";
 import { API_URL } from "pages";
-import { profile } from "console";
 import SuccessLottie from "./SuccessLottie";
 
 function Landing() {
-  const { fetchedUser } = useAuth();
-  const [currentVideo, setCurrentVideo] = useState(0);
+  const { user } = useAuth();
+  const [currentVideo, setCurrentVideo] = useState(1);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,10 +43,10 @@ function Landing() {
             currentVideo !== videoNum ? styles.fadeOut : ""
           }`}
         >
-          <source src={`/${videoNum}.mp4`} type="video/mp4" />
+          <source src={`/landing/${videoNum}.mp4`} type="video/mp4" />
         </video>
       ))}
-      {fetchedUser ? <SignIn /> : <SignUp />}
+      {user ? <SignIn /> : <SignUp />}
       <div className={styles.overlay} />
     </main>
   );
@@ -276,7 +283,7 @@ function SignUp() {
             ) : (
               <VStack className={styles.centeredText2}>
                 <Text>Preview Profile</Text>
-                <img
+                <Image
                   src={mediaURL}
                   alt="Uploaded preview"
                   className={styles.uploadedProfile}
@@ -309,7 +316,7 @@ function SignUp() {
             </VStack>
             <VStack className={styles.centeredText2}>
               <Text>Your Playz Profile</Text>
-              <img
+              <Image
                 src={mediaURL ?? ""}
                 alt="Uploaded preview"
                 className={styles.uploadedProfile}
