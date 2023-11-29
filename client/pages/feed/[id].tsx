@@ -20,7 +20,7 @@ function Feed() {
   const { fetchedUser } = useAuth();
   const { data: signer, isError } = useSigner();
   const { id } = router.query;
-  const [fetchedURI, setFetchedURI] = useState("");
+  const [fetchedVideo, setFetchedVideo] = useState(null);
   const { address } = useAccount();
   const [videos, setvideos] = useState([]);
   const [creators, setCreators] = useState([]);
@@ -73,7 +73,8 @@ function Feed() {
       signer
     );
     const uri = await contract["uri(uint256)"](BigNumber.from(1));
-    setFetchedURI(uri);
+    const response = await axios.get(uri);
+    setFetchedVideo(response.data);
   }, [fetchedUser, signer]);
 
   useEffect(() => {
@@ -94,10 +95,25 @@ function Feed() {
       </main>
     );
 
+  console.log("fetchedVideo: ", fetchedVideo);
+
   return (
     <main className={styles.main}>
       <Header isFeed />
       <div className={styles.sliderContainer}>
+        {fetchedVideo && (
+          <VideoCard
+            index={id}
+            video={fetchedVideo}
+            lastVideoIndex={videos.length - 1}
+            getVideos={getVideos}
+            creator={{
+              name: { first: "Jeremy", last: "Starr" },
+              location: { city: "North Hollywood" },
+              picture: { thumbnail: "/jeremy.jpg" },
+            }}
+          />
+        )}
         {videos.length > 0 ? (
           <>
             {videos.slice(0, 10).map((video, id) => (

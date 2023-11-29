@@ -232,7 +232,7 @@ const VideoCard = ({ index, video, lastVideoIndex, getVideos, creator }) => {
         autoPlay={index === 1}
         muted // TOOD: remove later
       >
-        <source src={video.video_files[0].link} type="video/mp4" />
+        <source src={video && video.video_files[0].link} type="video/mp4" />
       </video>
       <VStack className={styles.overlay} />
       {creator && (
